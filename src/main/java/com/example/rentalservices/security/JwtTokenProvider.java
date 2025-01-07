@@ -1,6 +1,6 @@
 package com.example.rentalservices.security;
 
-import com.example.rentalservices.model.Employee;
+import com.example.rentalservices.exception.RentalServiceApiException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
@@ -62,15 +62,14 @@ public class JwtTokenProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (SignatureException e) {
-           // throw new (HttpStatus.BAD_REQUEST,"Invalid JWT token");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid JWT token");
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
-           // throw new (HttpStatus.BAD_REQUEST,"Expired JWT token");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Expired JWT token");
         } catch (io.jsonwebtoken.MalformedJwtException e) {
-            //throw new (HttpStatus.BAD_REQUEST,"Unsupported JWT token");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Unsupported JWT token");
         } catch (IllegalArgumentException e) {
-            //throw new (HttpStatus.BAD_REQUEST,"JWT claims string is empty");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"JWT claims string is empty");
         }
-        return false;
     }
 
     // Pobranie `Claims` z tokena JWT
