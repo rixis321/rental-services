@@ -11,5 +11,7 @@ public interface AuthService {
 
     String loginCustomer(LoginDto loginDto);
 
-    NewCustomer registerCustomer(NewCustomer newCustomer);
+    String registerCustomer(NewCustomer newCustomer);
+
+
 }

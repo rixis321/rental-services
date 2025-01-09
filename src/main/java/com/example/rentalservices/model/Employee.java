@@ -25,7 +25,8 @@ public class Employee {
     private String password;
     private String firstName;
     private String lastName;
-
+    @Column(unique = true, nullable = false)
+    private String phone;
     @ManyToOne
     @JoinColumn(name = "roleID", nullable = false)
     private Role role;
@@ -95,5 +96,14 @@ public class Employee {
 
     public void setActionLogs(List<ActionLog> actionLogs) {
         this.actionLogs = actionLogs;
+    }
+
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }
