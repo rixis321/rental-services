@@ -6,6 +6,7 @@ import com.example.rentalservices.mapper.CustomerMapper;
 import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.model.Employee;
 import com.example.rentalservices.model.Role;
+import com.example.rentalservices.model.enums.EventType;
 import com.example.rentalservices.payload.NewCustomer;
 import com.example.rentalservices.payload.NewEmployee;
 import com.example.rentalservices.repository.CustomerRepository;
@@ -15,6 +16,7 @@ import com.example.rentalservices.security.JwtTokenProvider;
 import com.example.rentalservices.security.UserAuth;
 import com.example.rentalservices.security.auth.AuthService;
 import com.example.rentalservices.security.auth.payload.LoginDto;
+import com.example.rentalservices.service.EventLogService;
 import com.example.rentalservices.validator.UserDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +46,10 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDataValidator userDataValidator;
     private final CustomerMapper customerMapper;
+    private final EventLogService eventLogService;
 
 
-    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository) {
+    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository, EventLogService eventLogService) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -55,6 +58,7 @@ public class AuthServiceImpl implements AuthService {
         this.userDataValidator = userDataValidator;
         this.customerMapper = customerMapper;
         this.roleRepository = roleRepository;
+        this.eventLogService = eventLogService;
     }
 
     @Override
@@ -88,9 +92,12 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         if(!customer.getActivationStatus()){
+            eventLogService.logEvent(EventType.LOGIN_FAILED,"Customer account is not activated"
+                    ,customer.getEmail());
             throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"User account is not activated");
         }
-
+        eventLogService.logEvent(EventType.LOGIN_SUCCESS,"Customer successfully authenticated"
+                ,customer.getEmail());
         logger.info("User successfully authenticated");
         return jwtTokenProvider.generateToken(authentication,new UserAuth(customer.getUuid(), customer.getRole().getName()));
     }
@@ -107,6 +114,8 @@ public class AuthServiceImpl implements AuthService {
             customer.setRole(roleRepository.findByName("CLIENT"));
             customer = customerRepository.save(customer);
 
+            eventLogService.logEvent(EventType.REGISTRATION_SUCCESS,"Customer successfully" +
+                    " registered",customer.getEmail());
             return "Customer registered successfully";
         }catch (ValidationException e) {
         logger.error("Validation failed: {}", e.getMessage());
@@ -116,8 +125,11 @@ public class AuthServiceImpl implements AuthService {
         throw e;
          } catch (Exception e) {
         logger.error("Unexpected error: {}", e.getMessage());
+        eventLogService.logEvent(EventType.UNEXPECTED_ERROR,"Unexpected error during customer registration");
         throw new RuntimeException("Customer registration failed due to an unexpected error.", e);
-    }
+
+
+        }
 
 
     }

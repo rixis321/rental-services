@@ -1,9 +1,6 @@
 package com.example.rentalservices.config;
 
-import com.example.rentalservices.security.CustomerUserDetailsService;
-import com.example.rentalservices.security.EmployeeUserDetailsService;
-import com.example.rentalservices.security.JwtAuthenticationEntryPoint;
-import com.example.rentalservices.security.JwtAuthenticationFilter;
+import com.example.rentalservices.security.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,14 +20,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final CustomerUserDetailsService customerUserDetailsService;
-    private final EmployeeUserDetailsService employeeUserDetailsService;
+    //private final CustomerUserDetailsService customerUserDetailsService;
+    //private final EmployeeUserDetailsService employeeUserDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(CustomerUserDetailsService customerUserDetailsService, EmployeeUserDetailsService employeeUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.customerUserDetailsService = customerUserDetailsService;
-        this.employeeUserDetailsService = employeeUserDetailsService;
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.userDetailsService = userDetailsService;
+        //this.customerUserDetailsService = customerUserDetailsService;
+        //this.employeeUserDetailsService = employeeUserDetailsService;
 
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;

@@ -2,6 +2,7 @@ package com.example.rentalservices.security.controller;
 
 import com.example.rentalservices.payload.NewCustomer;
 import com.example.rentalservices.security.auth.AuthService;
+import com.example.rentalservices.security.auth.payload.JwtAuthResponse;
 import com.example.rentalservices.security.auth.payload.LoginDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,13 @@ public class AuthController {
 
     @PostMapping("/customer/login")
     public ResponseEntity<String> loginCustomer(@RequestBody LoginDto loginDto){
-        return new ResponseEntity<>(authService.loginCustomer(loginDto), HttpStatus.CREATED);
+        String token = authService.loginCustomer(loginDto);
+
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok()
+                .body("Bearer "+ jwtAuthResponse.getAccessToken());
+
     }
 }

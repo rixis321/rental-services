@@ -17,14 +17,18 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final CustomerUserDetailsService customerUserDetailsService;
-    private final EmployeeUserDetailsService employeeUserDetailsService;
+    //private final CustomerUserDetailsService customerUserDetailsService;
+    //private final EmployeeUserDetailsService employeeUserDetailsService;
+    private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtAuthenticationFilter(CustomerUserDetailsService customerUserDetailsService, EmployeeUserDetailsService employeeUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.customerUserDetailsService = customerUserDetailsService;
-        this.employeeUserDetailsService = employeeUserDetailsService;
+    public JwtAuthenticationFilter(CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) {
+        this.userDetailsService = userDetailsService;
+       // this.customerUserDetailsService = customerUserDetailsService;
+       // this.employeeUserDetailsService = employeeUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
@@ -37,17 +41,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
 
             String email = jwtTokenProvider.getEmail(token);
-            String role = jwtTokenProvider.getRole(token); // Pobranie roli z tokena
+           // String role = jwtTokenProvider.getRole(token); // Pobranie roli z tokena
 
-            UserDetails userDetails;
-
-            if ("CLIENT".equalsIgnoreCase(role)) {
-                userDetails = customerUserDetailsService.loadUserByUsername(email);
-            } else if ("EDITOR".equalsIgnoreCase(role) || "ADMIN".equalsIgnoreCase(role)) {
-                userDetails = employeeUserDetailsService.loadUserByUsername(email);
-            } else {
-                throw new IllegalArgumentException("Invalid role in token");
-            }
+            UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     userDetails,
