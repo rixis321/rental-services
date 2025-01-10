@@ -17,10 +17,10 @@ import java.util.Map;
 @Component
 public class JwtTokenProvider {
 
-    @Value("${app-jwt-secret}")
+    @Value("${app.jwt-secret}")
     private String jwtSecret;
 
-    @Value("${app-jwt-expiration-milliseconds}")
+    @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
 
@@ -28,7 +28,7 @@ public class JwtTokenProvider {
         String email = authentication.getName();
         Date currentDate = new Date();
         Date expiredDate = new Date(currentDate.getTime() + jwtExpirationDate);
-
+        System.out.println(jwtSecret);
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userAuth.getUuid());
         claims.put("role", userAuth.getRole());

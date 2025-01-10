@@ -1,8 +1,10 @@
 package com.example.rentalservices.security.auth.impl;
 
 import com.example.rentalservices.exception.RentalServiceApiException;
+import com.example.rentalservices.exception.ResourceNotFoundException;
 import com.example.rentalservices.exception.ValidationException;
 import com.example.rentalservices.mapper.CustomerMapper;
+import com.example.rentalservices.mapper.EmployeeMapper;
 import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.model.Employee;
 import com.example.rentalservices.model.Role;
@@ -17,6 +19,7 @@ import com.example.rentalservices.security.UserAuth;
 import com.example.rentalservices.security.auth.AuthService;
 import com.example.rentalservices.security.auth.payload.LoginDto;
 import com.example.rentalservices.service.EventLogService;
+import com.example.rentalservices.validator.PeselHandler;
 import com.example.rentalservices.validator.UserDataValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +50,11 @@ public class AuthServiceImpl implements AuthService {
     private final UserDataValidator userDataValidator;
     private final CustomerMapper customerMapper;
     private final EventLogService eventLogService;
+    private final PeselHandler peselHandler;
+    private final EmployeeMapper employeeMapper;
 
 
-    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository, EventLogService eventLogService) {
+    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository, EventLogService eventLogService, PeselHandler peselHandler, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -59,6 +64,8 @@ public class AuthServiceImpl implements AuthService {
         this.customerMapper = customerMapper;
         this.roleRepository = roleRepository;
         this.eventLogService = eventLogService;
+        this.peselHandler = peselHandler;
+        this.employeeMapper = employeeMapper;
     }
 
     @Override
@@ -72,15 +79,40 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
-        logger.info("User successfully authenticated");
+        logger.info("Employee successfully authenticated");
+        eventLogService.logEvent(EventType.REGISTRATION_SUCCESS,"Employee successfully" +
+                " registered",employee.getEmail());
         return jwtTokenProvider.generateToken(authentication,new UserAuth(employee.getUuid(), employee.getRole().getName()));
     }
 
     @Override
-    public NewEmployee registerEmployee(NewEmployee newEmployee) {
-        return null;
-    }
+    public String registerEmployee(NewEmployee newEmployee) {
+        try{
+            userDataValidator.validateEmployeeData(newEmployee);
+            Employee employee = employeeMapper.mapToEmployee(newEmployee);
+            employee.setUuid(UUID.randomUUID());
+            Role role = roleRepository.findByName(newEmployee.getRoleName());
+            if(role == null) {
+                throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid role");
+            }
+            employee.setRole(role);
+            employee.setPassword(passwordEncoder.encode(newEmployee.getPassword()));
+           employee = employeeRepository.save(employee);
+            return "Employee successfully registered";
 
+        }catch (ValidationException e) {
+            logger.error("Validation failed: {}", e.getMessage());
+            throw e;
+        } catch (RentalServiceApiException e) {
+            logger.error("API error: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error: {}", e.getMessage());
+            eventLogService.logEvent(EventType.UNEXPECTED_ERROR,"Unexpected error during customer registration");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,e.getMessage());
+
+        }
+    }
     @Override
     public String loginCustomer(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
@@ -98,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
         }
         eventLogService.logEvent(EventType.LOGIN_SUCCESS,"Customer successfully authenticated"
                 ,customer.getEmail());
-        logger.info("User successfully authenticated");
+        logger.info("Customer successfully authenticated");
         return jwtTokenProvider.generateToken(authentication,new UserAuth(customer.getUuid(), customer.getRole().getName()));
     }
 
@@ -106,12 +138,18 @@ public class AuthServiceImpl implements AuthService {
     public String registerCustomer(NewCustomer newCustomer) {
         try {
             userDataValidator.validateCustomerData(newCustomer);
+            peselHandler.isPeselValid(newCustomer.getPesel());
             Customer customer = customerMapper.mapToCustomer(newCustomer);
             customer.setActivationStatus(false);
+            customer.setPesel(peselHandler.encryptPesel(customer.getPesel()));
             customer.setUuid(UUID.randomUUID());
             customer.setPassword(passwordEncoder.encode(newCustomer.getPassword()));
             customer.setRegistrationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
             customer.setRole(roleRepository.findByName("CLIENT"));
+
+
+
+
             customer = customerRepository.save(customer);
 
             eventLogService.logEvent(EventType.REGISTRATION_SUCCESS,"Customer successfully" +
@@ -126,11 +164,22 @@ public class AuthServiceImpl implements AuthService {
          } catch (Exception e) {
         logger.error("Unexpected error: {}", e.getMessage());
         eventLogService.logEvent(EventType.UNEXPECTED_ERROR,"Unexpected error during customer registration");
-        throw new RuntimeException("Customer registration failed due to an unexpected error.", e);
+        throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,e.getMessage());
 
 
         }
 
 
+    }
+
+    @Override
+    public String activateCustomerAccount(LoginDto loginDto) {
+        Customer customer = customerRepository.findByEmail(loginDto.getEmail())
+                .orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+
+        customer.setActivationStatus(true);
+        customer = customerRepository.save(customer);
+
+        return "Customer account activated successfully";
     }
 }

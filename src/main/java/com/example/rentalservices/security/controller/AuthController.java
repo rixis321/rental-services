@@ -1,6 +1,8 @@
 package com.example.rentalservices.security.controller;
 
+import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.payload.NewCustomer;
+import com.example.rentalservices.payload.NewEmployee;
 import com.example.rentalservices.security.auth.AuthService;
 import com.example.rentalservices.security.auth.payload.JwtAuthResponse;
 import com.example.rentalservices.security.auth.payload.LoginDto;
@@ -34,5 +36,27 @@ public class AuthController {
         return ResponseEntity.ok()
                 .body("Bearer "+ jwtAuthResponse.getAccessToken());
 
+    }
+
+    @PostMapping("/employee/register")
+    public ResponseEntity<String> registerEmployee(@RequestBody NewEmployee newEmployee){
+        return new ResponseEntity<>(authService.registerEmployee(newEmployee), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/employee/login")
+    public ResponseEntity<String> loginEmployee(@RequestBody LoginDto loginDto){
+        String token = authService.loginEmployee(loginDto);
+
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+
+        return ResponseEntity.ok()
+                .body("Bearer "+ jwtAuthResponse.getAccessToken());
+
+    }
+
+    @PutMapping("/customer/activate")
+    public ResponseEntity<String> activateCustomerAccount(@RequestBody LoginDto loginDto){
+        return new ResponseEntity<>(authService.activateCustomerAccount(loginDto), HttpStatus.OK);
     }
 }

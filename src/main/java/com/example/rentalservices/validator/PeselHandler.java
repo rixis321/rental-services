@@ -1,4 +1,5 @@
 package com.example.rentalservices.validator;
+import com.example.rentalservices.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,20 +22,24 @@ public class PeselHandler {
     // Sprawdza poprawność numeru PESEL
     public boolean isPeselValid(String pesel) {
         if (pesel == null || !pesel.matches("\\d{11}")) {
-            return false;
+            throw new ValidationException("Invalid pesel number");
         }
 
         // Wyciągnięcie daty urodzenia z PESEL
         LocalDate birthDate = extractBirthDateFromPesel(pesel);
         if (birthDate == null) {
-            return false;
+            throw new ValidationException("Cannot extract birth date from pesel");
         }
 
         // Sprawdzenie, czy osoba jest pełnoletnia
         LocalDate now = LocalDate.now();
         LocalDate adultDate = birthDate.plusYears(18);
 
-        return !now.isBefore(adultDate);
+        if(now.isBefore(adultDate)){
+            throw new ValidationException("Cannot create account. You are underage");
+        }
+
+        return true;
     }
 
     // Wyciąga datę urodzenia z PESEL
@@ -63,14 +68,22 @@ public class PeselHandler {
         try {
             return LocalDate.of(year, month, day);
         } catch (Exception e) {
-            return null; // Nieprawidłowa data
+            return null;
         }
     }
 
     // Szyfrowanie numeru PESEL
     public String encryptPesel(String pesel) throws Exception {
+        // Dekodowanie klucza Base64
+        byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
+
+        // Sprawdzenie długości klucza
+        if (decodedKey.length != 16 && decodedKey.length != 24 && decodedKey.length != 32) {
+            throw new IllegalArgumentException("Invalid AES key length: " + decodedKey.length + " bytes");
+        }
+
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        SecretKey key = new SecretKeySpec(SECRET_KEY.getBytes(), AES_ALGORITHM);
+        SecretKey key = new SecretKeySpec(decodedKey, AES_ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
         byte[] encryptedBytes = cipher.doFinal(pesel.getBytes());
         return Base64.getEncoder().encodeToString(encryptedBytes);
