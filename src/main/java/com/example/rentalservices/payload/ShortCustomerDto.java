@@ -8,7 +8,7 @@ import java.util.UUID;
 
 
 @AllArgsConstructor
-public class CustomerDto {
+public class ShortCustomerDto {
     private UUID uuid;
 
     private String firstName;

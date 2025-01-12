@@ -5,19 +5,16 @@ import com.example.rentalservices.exception.ResourceNotFoundException;
 import com.example.rentalservices.mapper.CustomerMapper;
 import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.model.enums.EventType;
-import com.example.rentalservices.payload.CustomerDto;
+import com.example.rentalservices.payload.ShortCustomerDto;
 import com.example.rentalservices.repository.CustomerRepository;
-import com.example.rentalservices.repository.EventLogRepository;
 import com.example.rentalservices.service.CustomerService;
 import com.example.rentalservices.service.EventLogService;
 import com.example.rentalservices.validator.PeselHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -54,7 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDto getCustomer(UUID customerId) {
+    public ShortCustomerDto getCustomer(UUID customerId) {
 
         Customer customer = customerRepository.findByUuid(customerId).orElseThrow(
                 ()->new ResourceNotFoundException("CustomerID",customerId.toString())
@@ -63,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<CustomerDto> getAllCustomers() {
+    public List<ShortCustomerDto> getAllCustomers() {
 
         return customerRepository.findAll().stream()
                 .map(customerMapper::mapToCustomerDto)

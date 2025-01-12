@@ -51,7 +51,8 @@ public class SecurityConfig {
                  .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(HttpMethod.POST,"/api/auth/customer/register").permitAll()
                          .requestMatchers(HttpMethod.POST,"/api/auth/customer/login").permitAll()
-                         .requestMatchers(HttpMethod.GET,"/api/customers").hasAnyRole("ADMIN","EDITOR")
+                         .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
+                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
                          .anyRequest().permitAll()
                 )
                 .exceptionHandling((exception)->

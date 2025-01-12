@@ -2,7 +2,7 @@ package com.example.rentalservices.mapper;
 
 
 import com.example.rentalservices.model.Customer;
-import com.example.rentalservices.payload.CustomerDto;
+import com.example.rentalservices.payload.ShortCustomerDto;
 import com.example.rentalservices.payload.NewCustomer;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -13,5 +13,5 @@ public interface CustomerMapper {
 
     Customer mapToCustomer(NewCustomer newCustomer);
 
-    CustomerDto mapToCustomerDto(Customer customer);
+    ShortCustomerDto mapToCustomerDto(Customer customer);
 }
