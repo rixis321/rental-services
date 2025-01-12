@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 @Entity
 @Data
@@ -58,5 +59,29 @@ public class Role {
 
     public void setCustomers(List<Customer> customers) {
         this.customers = customers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(roleID, role.roleID) && Objects.equals(uuid, role.uuid) && Objects.equals(name, role.name) && Objects.equals(employees, role.employees) && Objects.equals(customers, role.customers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleID, uuid, name, employees, customers);
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleID=" + roleID +
+                ", uuid=" + uuid +
+                ", name='" + name + '\'' +
+                ", employees=" + employees +
+                ", customers=" + customers +
+                '}';
     }
 }

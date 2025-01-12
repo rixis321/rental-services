@@ -91,9 +91,20 @@ public class PeselHandler {
 
     // Odszyfrowanie numeru PESEL
     public String decryptPesel(String encryptedPesel) throws Exception {
+        // Dekodowanie klucza z Base64
+        byte[] decodedKey = Base64.getDecoder().decode(SECRET_KEY);
+
+        // Upewnij się, że długość klucza jest odpowiednia
+        if (decodedKey.length != 16 && decodedKey.length != 24 && decodedKey.length != 32) {
+            throw new IllegalArgumentException("Invalid AES key length: " + decodedKey.length);
+        }
+
+        // Inicjalizacja szyfrowania AES
         Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-        SecretKey key = new SecretKeySpec(SECRET_KEY.getBytes(), AES_ALGORITHM);
+        SecretKey key = new SecretKeySpec(decodedKey, AES_ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
+
+        // Odszyfrowanie danych
         byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPesel));
         return new String(decryptedBytes);
     }

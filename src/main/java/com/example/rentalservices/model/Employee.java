@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 @Entity
 @Data
@@ -105,5 +106,33 @@ public class Employee {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return Objects.equals(employeeID, employee.employeeID) && Objects.equals(uuid, employee.uuid) && Objects.equals(email, employee.email) && Objects.equals(password, employee.password) && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(phone, employee.phone) && Objects.equals(role, employee.role) && Objects.equals(actionLogs, employee.actionLogs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(employeeID, uuid, email, password, firstName, lastName, phone, role, actionLogs);
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeID=" + employeeID +
+                ", uuid=" + uuid +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", role=" + role +
+                ", actionLogs=" + actionLogs +
+                '}';
     }
 }

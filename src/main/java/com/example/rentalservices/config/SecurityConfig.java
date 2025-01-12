@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -50,14 +51,15 @@ public class SecurityConfig {
                  .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(HttpMethod.POST,"/api/auth/customer/register").permitAll()
                          .requestMatchers(HttpMethod.POST,"/api/auth/customer/login").permitAll()
+                         .requestMatchers(HttpMethod.GET,"/api/customers").hasAnyRole("ADMIN","EDITOR")
                          .anyRequest().permitAll()
                 )
-                 .csrf().disable()
                 .exceptionHandling((exception)->
                         exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement((session)->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                 .csrf().disable()
                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

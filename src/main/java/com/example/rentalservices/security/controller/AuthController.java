@@ -59,4 +59,6 @@ public class AuthController {
     public ResponseEntity<String> activateCustomerAccount(@RequestBody LoginDto loginDto){
         return new ResponseEntity<>(authService.activateCustomerAccount(loginDto), HttpStatus.OK);
     }
+
+
 }

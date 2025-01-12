@@ -32,6 +32,7 @@ public class JwtTokenProvider {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userAuth.getUuid());
         claims.put("role", userAuth.getRole());
+        claims.put("email", email);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -45,7 +46,7 @@ public class JwtTokenProvider {
     // Pobranie e-maila (subject) z tokena JWT
     public String getEmail(String token) {
         Claims claims = getClaimsFromToken(token);
-        return claims.getSubject(); // Subject w tym wypadku to e-mail użytkownika
+        return (String) claims.get("email");
     }
 
     // Pobranie roli z tokena JWT
@@ -61,7 +62,8 @@ public class JwtTokenProvider {
                     .setSigningKey(jwtSecret)
                     .parseClaimsJws(token);
             return true;
-        } catch (SignatureException e) {
+        }
+        catch (SignatureException e) {
             throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid JWT token");
         } catch (io.jsonwebtoken.ExpiredJwtException e) {
             throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Expired JWT token");
