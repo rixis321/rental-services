@@ -1,7 +1,6 @@
 package com.example.rentalservices.security.auth.impl;
 
 import com.example.rentalservices.exception.RentalServiceApiException;
-import com.example.rentalservices.exception.ResourceNotFoundException;
 import com.example.rentalservices.exception.ValidationException;
 import com.example.rentalservices.mapper.CustomerMapper;
 import com.example.rentalservices.mapper.EmployeeMapper;
@@ -9,7 +8,7 @@ import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.model.Employee;
 import com.example.rentalservices.model.Role;
 import com.example.rentalservices.model.enums.EventType;
-import com.example.rentalservices.payload.NewCustomer;
+import com.example.rentalservices.payload.customer.NewCustomer;
 import com.example.rentalservices.payload.NewEmployee;
 import com.example.rentalservices.repository.CustomerRepository;
 import com.example.rentalservices.repository.EmployeeRepository;

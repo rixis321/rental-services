@@ -1,6 +1,6 @@
 package com.example.rentalservices.service;
 
-import com.example.rentalservices.payload.ShortCustomerDto;
+import com.example.rentalservices.payload.customer.ShortCustomerDto;
 
 import java.util.List;
 import java.util.UUID;

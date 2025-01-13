@@ -5,7 +5,7 @@ import com.example.rentalservices.exception.ResourceNotFoundException;
 import com.example.rentalservices.mapper.CustomerMapper;
 import com.example.rentalservices.model.Customer;
 import com.example.rentalservices.model.enums.EventType;
-import com.example.rentalservices.payload.ShortCustomerDto;
+import com.example.rentalservices.payload.customer.ShortCustomerDto;
 import com.example.rentalservices.repository.CustomerRepository;
 import com.example.rentalservices.service.CustomerService;
 import com.example.rentalservices.service.EventLogService;

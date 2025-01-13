@@ -1,4 +1,4 @@
-package com.example.rentalservices.payload;
+package com.example.rentalservices.payload.customer;
 
 
 import lombok.AllArgsConstructor;

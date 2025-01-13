@@ -28,6 +28,7 @@ public class Car {
 
     private Double pricePerDay;
     private Integer year;
+    @Column(unique = true, nullable = false)
     private String vin;
     private Integer mileage;
 
