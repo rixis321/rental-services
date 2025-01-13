@@ -2,8 +2,10 @@ package com.example.rentalservices.controller;
 
 import com.example.rentalservices.payload.ShortCustomerDto;
 import com.example.rentalservices.security.CustomUserDetailsService;
+import com.example.rentalservices.security.auth.AccessControlService;
 import com.example.rentalservices.service.CustomerService;
 import com.example.rentalservices.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,40 +26,49 @@ import java.util.UUID;
 public class CustomerController {
     private final CustomerService customerService;
     private final CustomUserDetailsService customUserDetailsService;
-    private final UserService userService;
-    public CustomerController(CustomerService customerService, CustomUserDetailsService customUserDetailsService, UserService userService) {
+    private final AccessControlService accessControlService;
+    public CustomerController(CustomerService customerService, CustomUserDetailsService customUserDetailsService, AccessControlService accessControlService) {
         this.customerService = customerService;
         this.customUserDetailsService = customUserDetailsService;
-        this.userService = userService;
+        this.accessControlService = accessControlService;
     }
 
-
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/customers")
     public ResponseEntity<List<ShortCustomerDto>> getAllCustomers() {
         return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK);
     }
 
-
+//TODO ZEMINIC SHORT NA -> CUSTOMERDTO
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/customers/{customerId}")
     public ResponseEntity<ShortCustomerDto> getCustomerById(@PathVariable UUID customerId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if(userDetails.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))){
+
+        if (accessControlService.isAdmin(userDetails)) {
             return new ResponseEntity<>(customerService.getCustomer(customerId), HttpStatus.OK);
-        }
-        else if (userDetails.getAuthorities().contains(new SimpleGrantedAuthority("CLIENT"))) {
-            if(userService.doesUserExistByEmailAndId(userDetails.getUsername(), customerId)){
-                return new ResponseEntity<>(customerService.getCustomer(customerId), HttpStatus.OK);
-            }else
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        else
+        } else if (accessControlService.isClientWithAccess(userDetails, customerId)) {
+            return new ResponseEntity<>(customerService.getCustomer(customerId), HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/customers/{customerID}/pesel")
     public ResponseEntity<String> getCustomerPeselNumber(@PathVariable("customerID") UUID customerID) throws Exception {
-        return new  ResponseEntity<>(customerService.getCustomerPeselNumber(customerID), HttpStatus.OK);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        if (accessControlService.isAdmin(userDetails)) {
+            return new ResponseEntity<>(customerService.getCustomerPeselNumber(customerID), HttpStatus.OK);
+        } else if (accessControlService.isClientWithAccess(userDetails, customerID)) {
+            return new ResponseEntity<>(customerService.getCustomerPeselNumber(customerID), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
     }
 
 

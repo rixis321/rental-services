@@ -39,8 +39,11 @@ public class CustomerServiceImpl implements CustomerService {
         );
 
         try {
-            String decryptedPesel = peselHandler.decryptPesel(customer.getPesel());
-            eventLogService.logEvent(EventType.PESEL_DECRYPTION_SUCCESS,"Attempting pesel number",customer.getEmail());
+
+            String decryptedPesel = customer.getPesel();
+            //TODO CHANGES HERE DEPEND ON FRONTEND
+           // String decryptedPesel = peselHandler.decryptPesel(customer.getPesel());
+           // eventLogService.logEvent(EventType.PESEL_DECRYPTION_SUCCESS,"Attempting pesel number",customer.getEmail());
             return decryptedPesel;
         }catch (Exception e){
             e.printStackTrace();
