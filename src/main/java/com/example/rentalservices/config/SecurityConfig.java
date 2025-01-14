@@ -59,10 +59,14 @@ public class SecurityConfig {
                  .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(HttpMethod.POST,"/api/auth/customer/register").permitAll()
                          .requestMatchers(HttpMethod.POST,"/api/auth/customer/login").permitAll()
+                         .requestMatchers(HttpMethod.GET,"/api/cars").permitAll()
+                         .requestMatchers(HttpMethod.GET,"/api/cars/{carId}").permitAll()
+                         .requestMatchers(HttpMethod.POST,"/api/cars").hasRole("ADMIN")
+                         .requestMatchers(HttpMethod.PUT,"/api/cars/{carId}").hasRole("ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}/pesel").hasAnyAuthority("CLIENT", "ADMIN")
-                         .anyRequest().permitAll()
+                         .anyRequest().denyAll()
                 )
                 .exceptionHandling((exception)->
                         exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))

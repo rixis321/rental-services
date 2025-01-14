@@ -25,13 +25,11 @@ public class PeselHandler {
             throw new ValidationException("Invalid pesel number");
         }
 
-        // Wyciągnięcie daty urodzenia z PESEL
         LocalDate birthDate = extractBirthDateFromPesel(pesel);
         if (birthDate == null) {
             throw new ValidationException("Cannot extract birth date from pesel");
         }
 
-        // Sprawdzenie, czy osoba jest pełnoletnia
         LocalDate now = LocalDate.now();
         LocalDate adultDate = birthDate.plusYears(18);
 
@@ -42,7 +40,6 @@ public class PeselHandler {
         return true;
     }
 
-    // Wyciąga datę urodzenia z PESEL
     private LocalDate extractBirthDateFromPesel(String pesel) {
         int year = Integer.parseInt(pesel.substring(0, 2));
         int month = Integer.parseInt(pesel.substring(2, 4));

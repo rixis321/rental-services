@@ -23,11 +23,9 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class CustomerController {
     private final CustomerService customerService;
-    private final CustomUserDetailsService customUserDetailsService;
     private final AccessControlService accessControlService;
-    public CustomerController(CustomerService customerService, CustomUserDetailsService customUserDetailsService, AccessControlService accessControlService) {
+    public CustomerController(CustomerService customerService, AccessControlService accessControlService) {
         this.customerService = customerService;
-        this.customUserDetailsService = customUserDetailsService;
         this.accessControlService = accessControlService;
     }
 

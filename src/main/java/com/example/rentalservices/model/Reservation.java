@@ -32,8 +32,8 @@ public class Reservation {
     private Date startDate;
     private Date endDate;
 
-    @Enumerated(EnumType.STRING)
-    private ReservationStatus status;
+//    @Enumerated(EnumType.STRING)
+//    private ReservationStatus status;
 
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Payment payment;

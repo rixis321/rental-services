@@ -30,7 +30,7 @@ public class UserDataValidator {
     // function that validate employee data
     public boolean validateEmployeeData(NewEmployee newEmployee) {
         return validateString(newEmployee.getFirstName()) && validateString(newEmployee.getLastName())
-                && validateCustomerEmail(newEmployee.getEmail()) && validatePhoneNumber(newEmployee.getPhone(), "employee")
+                && validateEmployeeEmail(newEmployee.getEmail()) && validatePhoneNumber(newEmployee.getPhone(), "employee")
                 && validatePassword(newEmployee.getPassword()) && isAdminOrEditor(newEmployee.getRoleName());
     }
 

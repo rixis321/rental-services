@@ -80,7 +80,7 @@ public class AuthServiceImpl implements AuthService {
 
         logger.info("Employee successfully authenticated");
         eventLogService.logEvent(EventType.REGISTRATION_SUCCESS,"Employee successfully" +
-                " registered",employee.getEmail());
+                " logged in",employee.getEmail());
         return jwtTokenProvider.generateToken(authentication,new UserAuth(employee.getUuid(), employee.getRole().getName()));
     }
 
