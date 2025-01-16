@@ -1,7 +1,7 @@
 package com.example.rentalservices.security.auth;
 
 import com.example.rentalservices.payload.customer.NewCustomer;
-import com.example.rentalservices.payload.NewEmployee;
+import com.example.rentalservices.payload.employee.NewEmployee;
 import com.example.rentalservices.security.auth.payload.LoginDto;
 
 public interface AuthService {

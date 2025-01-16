@@ -9,7 +9,7 @@ import com.example.rentalservices.model.Employee;
 import com.example.rentalservices.model.Role;
 import com.example.rentalservices.model.enums.EventType;
 import com.example.rentalservices.payload.customer.NewCustomer;
-import com.example.rentalservices.payload.NewEmployee;
+import com.example.rentalservices.payload.employee.NewEmployee;
 import com.example.rentalservices.repository.CustomerRepository;
 import com.example.rentalservices.repository.EmployeeRepository;
 import com.example.rentalservices.repository.RoleRepository;

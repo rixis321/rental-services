@@ -16,17 +16,14 @@ public class EventLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(unique = true, nullable = false, updatable = false)
     private UUID uuid;
     private LocalDateTime timestamp = LocalDateTime.now();
-
     private String email;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EventType eventType;
-
-
     private String message;
 
     public Long getId() {

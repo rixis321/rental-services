@@ -31,6 +31,7 @@ public class Reservation {
 
     private Date startDate;
     private Date endDate;
+    private Double amount;
 
 //    @Enumerated(EnumType.STRING)
 //    private ReservationStatus status;

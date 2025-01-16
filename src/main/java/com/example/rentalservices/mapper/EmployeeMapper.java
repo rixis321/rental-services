@@ -1,7 +1,7 @@
 package com.example.rentalservices.mapper;
 
 import com.example.rentalservices.model.Employee;
-import com.example.rentalservices.payload.NewEmployee;
+import com.example.rentalservices.payload.employee.NewEmployee;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

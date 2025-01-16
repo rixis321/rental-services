@@ -1,5 +1,4 @@
-package com.example.rentalservices.payload;
-import com.example.rentalservices.model.Role;
+package com.example.rentalservices.payload.employee;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

@@ -3,7 +3,7 @@ package com.example.rentalservices.validator;
 import com.example.rentalservices.exception.RentalServiceApiException;
 import com.example.rentalservices.exception.ValidationException;
 import com.example.rentalservices.payload.customer.NewCustomer;
-import com.example.rentalservices.payload.NewEmployee;
+import com.example.rentalservices.payload.employee.NewEmployee;
 import com.example.rentalservices.repository.CustomerRepository;
 import com.example.rentalservices.repository.EmployeeRepository;
 import org.springframework.http.HttpStatus;

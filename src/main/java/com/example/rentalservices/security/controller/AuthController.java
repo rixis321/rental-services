@@ -1,7 +1,7 @@
 package com.example.rentalservices.security.controller;
 
 import com.example.rentalservices.payload.customer.NewCustomer;
-import com.example.rentalservices.payload.NewEmployee;
+import com.example.rentalservices.payload.employee.NewEmployee;
 import com.example.rentalservices.security.auth.AuthService;
 import com.example.rentalservices.security.auth.payload.JwtAuthResponse;
 import com.example.rentalservices.security.auth.payload.LoginDto;
