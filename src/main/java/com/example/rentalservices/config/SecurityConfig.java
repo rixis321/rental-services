@@ -66,6 +66,8 @@ public class SecurityConfig {
                          .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}/pesel").hasAnyAuthority("CLIENT", "ADMIN")
+                         .requestMatchers("/swagger-ui/**").permitAll()
+                         .requestMatchers("/v3/api-docs/**").permitAll()
                          .anyRequest().denyAll()
                 )
                 .exceptionHandling((exception)->
