@@ -4,6 +4,7 @@ import com.example.rentalservices.payload.reservation.NewReservation;
 import com.example.rentalservices.payload.reservation.ShortReservation;
 import com.example.rentalservices.security.auth.AccessControlService;
 import com.example.rentalservices.service.ReservationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,7 @@ public class ReservationController {
         this.accessControlService = accessControlService;
     }
 
-
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/customers/{customerID}/cars/{carId}/reservations")
     public ResponseEntity<String> createReservation(NewReservation newReservation, @PathVariable UUID carId, @PathVariable UUID customerID){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -37,7 +38,7 @@ public class ReservationController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
-
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/reservations")
     public ResponseEntity<List<ShortReservation>> getAllReservations(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,6 +49,7 @@ public class ReservationController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/customers/{customerID}/reservations")
     public ResponseEntity<List<ShortReservation>> getCustomerReservations(@PathVariable UUID customerID){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
