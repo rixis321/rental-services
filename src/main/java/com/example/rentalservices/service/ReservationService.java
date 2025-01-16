@@ -1,16 +1,16 @@
 package com.example.rentalservices.service;
 
 import com.example.rentalservices.payload.reservation.NewReservation;
-import com.example.rentalservices.payload.reservation.ReservationWithCar;
 import com.example.rentalservices.payload.reservation.ShortReservation;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ReservationService {
 
-    String createReservation(NewReservation newReservation);
+    String createReservation(NewReservation newReservation, UUID customerID,UUID carId);
 
     List<ShortReservation> getAllReservations();
 
-    ReservationWithCar getCustomerReservations(String customerId);
+    List<ShortReservation> getCustomerReservations(UUID customerId);
 }

@@ -17,4 +17,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Optional<Customer> findByUuid(UUID uuid);
 
     Optional<Customer> findByEmailAndUuid(String email, UUID userId);
+
+    Optional<Customer> findAllByUuid(UUID uuid);
 }

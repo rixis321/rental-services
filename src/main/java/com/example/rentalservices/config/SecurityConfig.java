@@ -66,6 +66,10 @@ public class SecurityConfig {
                          .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
                          .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}/pesel").hasAnyAuthority("CLIENT", "ADMIN")
+                         .requestMatchers(HttpMethod.POST,"/api/customers/{customerId}/cars/{carId}/reservations").hasAuthority("CLIENT")
+                         .requestMatchers(HttpMethod.GET,"/api/reservations").hasAuthority("ADMIN")
+                         .requestMatchers(HttpMethod.GET,"/customers/{customerID}/reservations").hasAuthority("CLIENT")
+
                          .requestMatchers("/swagger-ui/**").permitAll()
                          .requestMatchers("/v3/api-docs/**").permitAll()
                          .anyRequest().denyAll()
