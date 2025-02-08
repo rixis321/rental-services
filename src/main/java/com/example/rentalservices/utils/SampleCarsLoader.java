@@ -37,6 +37,7 @@ public class SampleCarsLoader implements CommandLineRunner {
                 car.setPricePerDay(80.0 + i * 15);
                 car.setYear(2015 + (i % 10));
                 car.setMileage(5000 + i * 1500);
+                car.setAvailable(true);
 
                 carRepository.save(car);
             }
