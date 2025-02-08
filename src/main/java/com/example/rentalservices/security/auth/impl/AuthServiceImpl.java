@@ -137,7 +137,11 @@ public class AuthServiceImpl implements AuthService {
     public String registerCustomer(NewCustomer newCustomer) {
         try {
             userDataValidator.validateCustomerData(newCustomer);
-            peselHandler.isPeselValid(newCustomer.getPesel());
+            if (newCustomer.getPesel() == null ) {
+                throw new ValidationException("Invalid pesel number");
+            }
+            String decryptedPesel = peselHandler.decryptPesel(newCustomer.getPesel());
+            peselHandler.isPeselValid(decryptedPesel);
             Customer customer = customerMapper.mapToCustomer(newCustomer);
             customer.setActivationStatus(false);
             customer.setPesel(peselHandler.encryptPesel(customer.getPesel()));
@@ -145,8 +149,6 @@ public class AuthServiceImpl implements AuthService {
             customer.setPassword(passwordEncoder.encode(newCustomer.getPassword()));
             customer.setRegistrationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
             customer.setRole(roleRepository.findByName("CLIENT"));
-
-
 
 
             customer = customerRepository.save(customer);
