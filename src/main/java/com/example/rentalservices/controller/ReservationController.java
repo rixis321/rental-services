@@ -28,7 +28,7 @@ public class ReservationController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/customers/{customerID}/cars/{carId}/reservations")
-    public ResponseEntity<String> createReservation(NewReservation newReservation, @PathVariable UUID carId, @PathVariable UUID customerID){
+    public ResponseEntity<String> createReservation(@RequestBody NewReservation newReservation, @PathVariable UUID carId, @PathVariable UUID customerID){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 

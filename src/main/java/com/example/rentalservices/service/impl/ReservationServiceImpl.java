@@ -49,15 +49,19 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setCar(car);
         reservation.setCustomer(customer);
         reservation.setStatus(ReservationStatus.CONFIRMED);
+        reservation.setUuid(UUID.randomUUID());
 
-        boolean isCarAvailable = reservationRepository
-                .isCarAvailable(car.getUuid(), newReservation.getStartDate(), newReservation.getEndDate());
 
-        if (!isCarAvailable) {
+        if (!car.isAvailable()) {
             throw new IllegalArgumentException("The car is not available for the selected dates.");
         }
 
         reservationRepository.save(reservation);
+
+        car.getReservations().add(reservation);
+        car.setAvailable(false);
+        carRepository.save(car);
+
         return "Reservation created";
     }
 
