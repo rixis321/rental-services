@@ -40,16 +40,12 @@ public class CustomerServiceImpl implements CustomerService {
         );
 
         try {
-
-            String decryptedPesel = customer.getPesel();
-            //TODO CHANGES HERE DEPEND ON FRONTEND
-           // String decryptedPesel = peselHandler.decryptPesel(customer.getPesel());
-           // eventLogService.logEvent(EventType.PESEL_DECRYPTION_SUCCESS,"Attempting pesel number",customer.getEmail());
-            return decryptedPesel;
+            eventLogService.logEvent(EventType.PESEL_GETTING_SUCCESS,"Attempting pesel number",customer.getEmail());
+            return customer.getPesel();
         }catch (Exception e){
             e.printStackTrace();
-            eventLogService.logEvent(EventType.PESEL_DECRYPTION_FAILED,"Attempting pesel number",customer.getEmail());
-            throw new RentalServiceApiException(HttpStatus.INTERNAL_SERVER_ERROR,"Failed to decrypt PESEL for customer");
+            eventLogService.logEvent(EventType.PESEL_GETTING_FAILED,"Attempting pesel number",customer.getEmail());
+            throw new RentalServiceApiException(HttpStatus.INTERNAL_SERVER_ERROR,"Failed to send PESEL number for customer");
         }
 
     }

@@ -144,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
             peselHandler.isPeselValid(decryptedPesel);
             Customer customer = customerMapper.mapToCustomer(newCustomer);
             customer.setActivationStatus(false);
-            customer.setPesel(peselHandler.encryptPesel(customer.getPesel()));
+            customer.setPesel(peselHandler.encryptPesel(decryptedPesel));
             customer.setUuid(UUID.randomUUID());
             customer.setPassword(passwordEncoder.encode(newCustomer.getPassword()));
             customer.setRegistrationDate(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()));
