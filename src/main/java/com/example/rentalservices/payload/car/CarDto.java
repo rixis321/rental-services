@@ -18,6 +18,7 @@ public class CarDto {
     @NotEmpty(message = "VIN should not be null or empty")
     private String vin;
     private Integer mileage;
+    private boolean isAvailable;
 
     public UUID getUuid() {
         return uuid;
@@ -91,17 +92,25 @@ public class CarDto {
         this.mileage = mileage;
     }
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CarDto carDto = (CarDto) o;
-        return Objects.equals(uuid, carDto.uuid) && Objects.equals(type, carDto.type) && Objects.equals(model, carDto.model) && Objects.equals(brand, carDto.brand) && Objects.equals(registrationNumber, carDto.registrationNumber) && Objects.equals(pricePerDay, carDto.pricePerDay) && Objects.equals(year, carDto.year) && Objects.equals(vin, carDto.vin) && Objects.equals(mileage, carDto.mileage);
+        return isAvailable == carDto.isAvailable && Objects.equals(uuid, carDto.uuid) && Objects.equals(type, carDto.type) && Objects.equals(model, carDto.model) && Objects.equals(brand, carDto.brand) && Objects.equals(registrationNumber, carDto.registrationNumber) && Objects.equals(pricePerDay, carDto.pricePerDay) && Objects.equals(year, carDto.year) && Objects.equals(vin, carDto.vin) && Objects.equals(mileage, carDto.mileage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid, type, model, brand, registrationNumber, pricePerDay, year, vin, mileage);
+        return Objects.hash(uuid, type, model, brand, registrationNumber, pricePerDay, year, vin, mileage, isAvailable);
     }
 
     @Override
@@ -116,6 +125,7 @@ public class CarDto {
                 ", year=" + year +
                 ", vin='" + vin + '\'' +
                 ", mileage=" + mileage +
+                ", isAvailable=" + isAvailable +
                 '}';
     }
 }

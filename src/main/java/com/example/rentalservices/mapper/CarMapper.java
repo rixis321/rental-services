@@ -12,6 +12,7 @@ import org.mapstruct.factory.Mappers;
 public interface CarMapper {
     CarMapper INSTANCE = Mappers.getMapper( CarMapper.class );
 
+
     ShortCarDto mapToShortCarDto(Car car);
 
     CarDto mapToCarDto(Car car);

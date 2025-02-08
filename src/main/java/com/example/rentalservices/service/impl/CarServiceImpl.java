@@ -87,6 +87,7 @@ public class CarServiceImpl implements CarService {
 
             Car car = carMapper.mapToCar(newCar);
             car.setUuid(UUID.randomUUID());
+            car.setAvailable(true);
             car = carRepository.save(car);
             logger.info("New car created");
             return "New car created";
@@ -129,6 +130,7 @@ public class CarServiceImpl implements CarService {
             Car updatedCar = carMapper.mapToCar(newCar);
             updatedCar.setCarID(car.getCarID());
             updatedCar.setUuid(car.getUuid());
+            updatedCar.setAvailable(car.isAvailable());
             carRepository.save(updatedCar);
             logger.info("Car updated");
             return "Car updated";

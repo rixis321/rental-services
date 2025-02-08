@@ -10,6 +10,7 @@ public class ShortCarDto {
     private String model;
     private String brand;
     private Double pricePerDay;
+    private boolean isAvailable;
 
     public UUID getUuid() {
         return uuid;
@@ -51,17 +52,12 @@ public class ShortCarDto {
         this.pricePerDay = pricePerDay;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ShortCarDto that = (ShortCarDto) o;
-        return Objects.equals(uuid, that.uuid) && Objects.equals(type, that.type) && Objects.equals(model, that.model) && Objects.equals(brand, that.brand) && Objects.equals(pricePerDay, that.pricePerDay);
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(uuid, type, model, brand, pricePerDay);
+    public void setAvailable(boolean available) {
+        isAvailable = available;
     }
 
     @Override
@@ -72,6 +68,20 @@ public class ShortCarDto {
                 ", model='" + model + '\'' +
                 ", brand='" + brand + '\'' +
                 ", pricePerDay=" + pricePerDay +
+                ", isAvailable=" + isAvailable +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ShortCarDto that = (ShortCarDto) o;
+        return isAvailable == that.isAvailable && Objects.equals(uuid, that.uuid) && Objects.equals(type, that.type) && Objects.equals(model, that.model) && Objects.equals(brand, that.brand) && Objects.equals(pricePerDay, that.pricePerDay);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid, type, model, brand, pricePerDay, isAvailable);
     }
 }

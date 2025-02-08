@@ -32,7 +32,7 @@ public class Car {
     @Column(unique = true, nullable = false)
     private String vin;
     private Integer mileage;
-
+    private boolean isAvailable;
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     private List<Reservation> reservations;
 
@@ -124,17 +124,25 @@ public class Car {
         this.reservations = reservations;
     }
 
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
-        return Objects.equals(carID, car.carID) && Objects.equals(uuid, car.uuid) && Objects.equals(type, car.type) && Objects.equals(model, car.model) && Objects.equals(brand, car.brand) && Objects.equals(registrationNumber, car.registrationNumber) && Objects.equals(pricePerDay, car.pricePerDay) && Objects.equals(year, car.year) && Objects.equals(vin, car.vin) && Objects.equals(mileage, car.mileage) && Objects.equals(reservations, car.reservations);
+        return isAvailable == car.isAvailable && Objects.equals(carID, car.carID) && Objects.equals(uuid, car.uuid) && Objects.equals(type, car.type) && Objects.equals(model, car.model) && Objects.equals(brand, car.brand) && Objects.equals(registrationNumber, car.registrationNumber) && Objects.equals(pricePerDay, car.pricePerDay) && Objects.equals(year, car.year) && Objects.equals(vin, car.vin) && Objects.equals(mileage, car.mileage) && Objects.equals(reservations, car.reservations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(carID, uuid, type, model, brand, registrationNumber, pricePerDay, year, vin, mileage, reservations);
+        return Objects.hash(carID, uuid, type, model, brand, registrationNumber, pricePerDay, year, vin, mileage, isAvailable, reservations);
     }
 
     @Override
@@ -150,6 +158,7 @@ public class Car {
                 ", year=" + year +
                 ", vin='" + vin + '\'' +
                 ", mileage=" + mileage +
+                ", isAvailable=" + isAvailable +
                 ", reservations=" + reservations +
                 '}';
     }
