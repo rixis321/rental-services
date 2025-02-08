@@ -57,19 +57,28 @@ public class SecurityConfig {
 
          return http
                  .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers(HttpMethod.POST,"/api/auth/customer/register").permitAll()
+                         //customer
+                         .requestMatchers(HttpMethod.POST,"/api/auth/customer/register").permitAll()
                          .requestMatchers(HttpMethod.POST,"/api/auth/customer/login").permitAll()
+                         .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
+                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
+                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}/pesel").hasAnyAuthority("CLIENT", "ADMIN")
+                         .requestMatchers(HttpMethod.PUT,"/api/auth/customer/activate").permitAll()
+                         //employee
+                         .requestMatchers(HttpMethod.POST,"/api/auth/employee/login").permitAll()
+                         .requestMatchers(HttpMethod.POST,"/api/auth/employee/register").hasRole("ADMIN")
+                         //cars
                          .requestMatchers(HttpMethod.GET,"/api/cars").permitAll()
                          .requestMatchers(HttpMethod.GET,"/api/cars/{carId}").permitAll()
                          .requestMatchers(HttpMethod.POST,"/api/cars").hasRole("ADMIN")
                          .requestMatchers(HttpMethod.PUT,"/api/cars/{carId}").hasRole("ADMIN")
-                         .requestMatchers(HttpMethod.GET,"/api/customers").hasAuthority("ADMIN")
-                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}").hasAnyAuthority("CLIENT", "ADMIN")
-                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerId}/pesel").hasAnyAuthority("CLIENT", "ADMIN")
+                         //reservations
                          .requestMatchers(HttpMethod.POST,"/api/customers/{customerId}/cars/{carId}/reservations").hasAuthority("CLIENT")
                          .requestMatchers(HttpMethod.GET,"/api/reservations").hasAuthority("ADMIN")
                          .requestMatchers(HttpMethod.GET,"/customers/{customerID}/reservations").hasAuthority("CLIENT")
-
+                         //logs
+                         .requestMatchers(HttpMethod.GET,"/api/logs").hasAuthority("ADMIN")
+                         //swagger
                          .requestMatchers("/swagger-ui/**").permitAll()
                          .requestMatchers("/v3/api-docs/**").permitAll()
                          .anyRequest().denyAll()
