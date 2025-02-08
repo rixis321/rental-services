@@ -28,6 +28,13 @@ public class AdminInitialization implements CommandLineRunner {
         if (!employeeRepository.existsByEmail("admin1@wp.pl")) {
             Role adminRole = roleRepository.findByName("ADMIN");
 
+            if (adminRole == null) {
+                adminRole = new Role();
+                adminRole.setName("ADMIN");
+                adminRole.setUuid(UUID.randomUUID());
+                roleRepository.save(adminRole);
+            }
+
             Employee admin = new Employee();
             admin.setUuid(UUID.randomUUID());
             admin.setEmail("admin1@wp.pl");

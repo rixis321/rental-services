@@ -19,6 +19,11 @@ public class ProjectDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         roleLoader.run(args);
+        try {
+            Thread.sleep(5000); // Opóźnienie 5 sekund
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         adminInitialization.run(args);
         sampleCarsLoader.run(args);
     }
