@@ -75,7 +75,7 @@ public class SecurityConfig {
                          //reservations
                          .requestMatchers(HttpMethod.POST,"/api/customers/{customerId}/cars/{carId}/reservations").hasAuthority("CLIENT")
                          .requestMatchers(HttpMethod.GET,"/api/reservations").hasAuthority("ADMIN")
-                         .requestMatchers(HttpMethod.GET,"/customers/{customerID}/reservations").hasAuthority("CLIENT")
+                         .requestMatchers(HttpMethod.GET,"/api/customers/{customerID}/reservations").hasAuthority("CLIENT")
                          //logs
                          .requestMatchers(HttpMethod.GET,"/api/logs").hasAuthority("ADMIN")
                          //swagger
