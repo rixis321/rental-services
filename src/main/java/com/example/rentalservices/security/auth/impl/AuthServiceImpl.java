@@ -17,6 +17,7 @@ import com.example.rentalservices.security.JwtTokenProvider;
 import com.example.rentalservices.security.UserAuth;
 import com.example.rentalservices.security.auth.AuthService;
 import com.example.rentalservices.security.auth.payload.LoginDto;
+import com.example.rentalservices.security.captcha.RecaptchaService;
 import com.example.rentalservices.service.EventLogService;
 import com.example.rentalservices.validator.PeselHandler;
 import com.example.rentalservices.validator.UserDataValidator;
@@ -51,9 +52,9 @@ public class AuthServiceImpl implements AuthService {
     private final EventLogService eventLogService;
     private final PeselHandler peselHandler;
     private final EmployeeMapper employeeMapper;
+    private final RecaptchaService recaptchaService;
 
-
-    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository, EventLogService eventLogService, PeselHandler peselHandler, EmployeeMapper employeeMapper) {
+    public AuthServiceImpl(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, CustomerRepository customerRepository, JwtTokenProvider jwtTokenProvider, UserDataValidator userDataValidator, CustomerMapper customerMapper, RoleRepository roleRepository, EventLogService eventLogService, PeselHandler peselHandler, EmployeeMapper employeeMapper, RecaptchaService recaptchaService) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -65,10 +66,15 @@ public class AuthServiceImpl implements AuthService {
         this.eventLogService = eventLogService;
         this.peselHandler = peselHandler;
         this.employeeMapper = employeeMapper;
+        this.recaptchaService = recaptchaService;
     }
 
     @Override
     public String loginEmployee(LoginDto loginDto) {
+        if (!recaptchaService.verify(loginDto.getRecaptchaToken())) {
+            eventLogService.logEvent(EventType.LOGIN_FAILED,"Employee login failed "+ loginDto.getEmail() + " .Invalid captcha");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid reCAPTCHA");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
@@ -79,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
 
 
         logger.info("Employee successfully authenticated");
-        eventLogService.logEvent(EventType.REGISTRATION_SUCCESS,"Employee successfully" +
+        eventLogService.logEvent(EventType.LOGIN_SUCCESS,"Employee successfully" +
                 " logged in",employee.getEmail());
         return jwtTokenProvider.generateToken(authentication,new UserAuth(employee.getUuid(), employee.getRole().getName()));
     }
@@ -114,6 +120,10 @@ public class AuthServiceImpl implements AuthService {
     }
     @Override
     public String loginCustomer(LoginDto loginDto) {
+        if (!recaptchaService.verify(loginDto.getRecaptchaToken())) {
+            eventLogService.logEvent(EventType.LOGIN_FAILED,"Customer login failed "+ loginDto.getEmail() + " .Invalid captcha");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid reCAPTCHA");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
         );
