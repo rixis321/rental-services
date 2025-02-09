@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class NewCustomer {
@@ -20,11 +22,10 @@ public class NewCustomer {
     private String pesel;
     @NotEmpty(message = "password should not be null or empty")
     private String password;
-
     public @NotEmpty(message = "Name should not be null or empty") String getFirstName() {
         return firstName;
     }
-
+    private String recaptchaToken;
     public void setFirstName(@NotEmpty(message = "Name should not be null or empty") String firstName) {
         this.firstName = firstName;
     }
@@ -67,5 +68,39 @@ public class NewCustomer {
 
     public void setPassword(@NotEmpty(message = "password should not be null or empty") String password) {
         this.password = password;
+    }
+
+    public String getRecaptchaToken() {
+        return recaptchaToken;
+    }
+
+    public void setRecaptchaToken(String recaptchaToken) {
+        this.recaptchaToken = recaptchaToken;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        NewCustomer that = (NewCustomer) o;
+        return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(pesel, that.pesel) && Objects.equals(password, that.password) && Objects.equals(recaptchaToken, that.recaptchaToken);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email, phone, pesel, password, recaptchaToken);
+    }
+
+    @Override
+    public String toString() {
+        return "NewCustomer{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", pesel='" + pesel + '\'' +
+                ", password='" + password + '\'' +
+                ", recaptchaToken='" + recaptchaToken + '\'' +
+                '}';
     }
 }

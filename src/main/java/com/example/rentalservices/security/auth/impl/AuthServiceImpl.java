@@ -145,6 +145,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String registerCustomer(NewCustomer newCustomer) {
+        if (!recaptchaService.verify(newCustomer.getRecaptchaToken())) {
+            eventLogService.logEvent(EventType.REGISTRATION_FAILED,"Customer register failed "+ newCustomer.getEmail() + " .Invalid captcha");
+            throw new RentalServiceApiException(HttpStatus.BAD_REQUEST,"Invalid reCAPTCHA");
+        }
         try {
             userDataValidator.validateCustomerData(newCustomer);
             if (newCustomer.getPesel() == null ) {
